@@ -13,7 +13,6 @@ const {
 const restAPI = process.env.BLOCKCHAIN_REST_SERVER;
 const rpc = process.env.RPC;
 const mnemonic = process.env.FAUCET_MNEMONIC;
-const valMnemonic = process.env.VALIDATOR_MNEMONIC;
 const msgSendTypeUrl = "/cosmos.bank.v1beta1.MsgMultiSend";
 const {
     MsgMultiSend,
