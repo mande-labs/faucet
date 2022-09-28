@@ -1,10 +1,58 @@
-# Osmosis Faucet
-This is work in progress, please see docs in fe and backend folder. 
+# Faucet
+Faucet server will expose two endpoints. One to request tokens and one to see the current queue
 
-### Frontend
-The frontend is deployed to github pages automatically via a git action. 
-You should run the frontend and backend together in your local environment. 
+# Requirements
+- Local environment or a server such a DigitalOcean droplet
+- Redis
+- NodeJs 14+
 
-### Backend
-The backend needs to be deployed to a server or ran locally for development, pm2 is used to manage the process. 
-..
+## Redis setup
+- Redis DigitalOcean, 
+    Complete guide [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04). 
+    ```sh
+    sudo apt install redis-server
+    sudo nano /etc/redis/redis.conf
+    ```
+    Update `supervised` to systemd
+    ```sh
+    sudo systemctl restart redis.service
+    ```
+- Redis MacOs [more](https://redis.io/docs/getting-started/installation/install-redis-on-mac-os/)
+```sh
+brew install redis
+```
+
+### Use node 14+
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install 14
+```
+
+### Install dependencies
+```
+npm install
+```
+
+### Run
+```
+npm start
+```
+
+### Production in DigitalOceam
+```
+npm install pm2@latest -g
+pm2 start
+```
+To restart use after downloading latest changes from repo `pm2 restart server`
+
+Use the following command to faucet tokens into your wallet address:
+
+### Local Environment
+```c
+curl -d '{"address":"cosmos1...<mande wallet address>"}' -H 'Content-Type: application/json' http://localhost:8080/request
+```
+
+### Testnet
+```c
+curl -d '{"address":"cosmos1a5h27j38jqe9ehqa95cjcm7vg05n56um0lufmj"}' -H 'Content-Type: application/json' https://testnet-faucet.dev-osmosis.zone/request
+```
