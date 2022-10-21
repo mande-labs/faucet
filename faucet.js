@@ -199,6 +199,15 @@ async function handleFaucetRequest(req) {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 
     try {
+        let txCount
+        try {
+            txCount = await client.incr("tx_cooloff")
+        } catch (err) {
+            console.error('txCount: could not increment key')
+            throw err
+        }
+
+
         let ipCount
         try {
             ipCount = await client.incr(ip)
@@ -208,9 +217,21 @@ async function handleFaucetRequest(req) {
         }
         console.log(`${ip} has value: ${ipCount}`)
 
+        if (txCount > constants.TX_COOLOFF_COUNT) {
+            console.log("Tx count is over limits")
+            let ttl = await client.ttl("tx_cooloff")
+            if (ttl < 0) {
+                await client.expire("tx_cooloff", constants.TX_COOLOFF_TIME)
+            }
+            return JSON.stringify({
+                status: "error",
+                message: "Faucet is cooling down, try again in 60 mins!"
+            });
+        }
+
         if (ipCount > constants.MAX_PER_IP) {
             console.log("Ip is over limits")
-            client.expire(ip, constants.TIME_LIMIT)
+            await client.expire(ip, constants.TIME_LIMIT)
             return JSON.stringify({
                 status: "error",
                 message: "You have requested " + ipCount + " times. The limit  " + constants.MAX_PER_IP + " per " + secondsToHms(constants.TIME_LIMIT) + ""
