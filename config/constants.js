@@ -8,7 +8,7 @@ const prefix= "mande";
 const gas_price = "0.0025mand";
 const gas = "20000000";
 const TIME_LIMIT = 24*3600; // 1 day
-const MAX_PER_IP = 1;
+const MAX_PER_IP = 2;
 const HD_PATH = "m/44'/118'/0'/0/0";
 module.exports = {
     FAUCET_QUEUE_LIMIT,

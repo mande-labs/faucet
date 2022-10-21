@@ -225,7 +225,7 @@ async function handleFaucetRequest(req) {
                     status: "error",
                     message: accountResponse.message
                 });
-            }else if (ipCount < constants.MAX_PER_IP) {
+            }else if (ipCount <= constants.MAX_PER_IP) {
                 let [wallet, addr] = await MnemonicWalletWithPassphrase(mnemonic);
                 await addToQueue(userAddress);
                 return JSON.stringify({
